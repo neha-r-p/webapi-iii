@@ -33,15 +33,27 @@ router.put('/:id', (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
+    if(){
 
+    } else {
+        res.status().json()
+    }
 };
 
 function validateUser(req, res, next) {
+    if(){
 
+    } else {
+        res.status().json()
+    }
 };
 
 function validatePost(req, res, next) {
+    if(){
 
+    } else {
+        res.status().json()
+    }
 };
 
 module.exports = router;
