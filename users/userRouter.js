@@ -36,7 +36,7 @@ function validateUserId(req, res, next) {
     if(){
 
     } else {
-        res.status().json()
+        res.status(400).json({ message: "invalid user id" })
     }
 };
 
@@ -44,7 +44,7 @@ function validateUser(req, res, next) {
     if(){
 
     } else {
-        res.status().json()
+        res.status(400).json({ message: "missing user data" })
     }
 };
 
@@ -52,7 +52,7 @@ function validatePost(req, res, next) {
     if(){
 
     } else {
-        res.status().json()
+        res.status(400).json({ message: "missing post data" })
     }
 };
 
