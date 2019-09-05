@@ -38,6 +38,8 @@ function validateUserId(req, res, next) {
     } else {
         res.status(400).json({ message: "invalid user id" })
     }
+    
+    next()
 };
 
 function validateUser(req, res, next) {
@@ -46,6 +48,8 @@ function validateUser(req, res, next) {
     } else {
         res.status(400).json({ message: "missing user data" })
     }
+
+    next();
 };
 
 function validatePost(req, res, next) {
@@ -54,6 +58,8 @@ function validatePost(req, res, next) {
     } else {
         res.status(400).json({ message: "missing post data" })
     }
+
+    next();
 };
 
 module.exports = router;
