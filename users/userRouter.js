@@ -42,7 +42,18 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.get("/:id/posts", (req, res) => {});
+router.get("/:id/posts", (req, res) => {
+    const userId = req.params.id;
+
+    userDb.getUserPosts(userId)
+      .then(posts => {
+        res.status(200).json(posts);
+      })
+      .catch(err => {
+        res.status(500).json({ message: "Posts for user not found" });
+      });
+});
+
 
 router.delete("/:id", (req, res) => {});
 
