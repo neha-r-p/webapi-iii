@@ -4,13 +4,13 @@ const server = express();
 
 server.use(express.json());
 
-const userRouter = require('./users/userRouter')
+const userRouter = require("./users/userRouter");
 
 server.get("/", (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);
 });
 
-server.use('/users', userRouter)
+server.use("/users", userRouter);
 
 //custom middleware
 
@@ -23,6 +23,6 @@ function logger(req, res, next) {
   next();
 }
 
-server.use(logger)
+server.use(logger);
 
 module.exports = server;
