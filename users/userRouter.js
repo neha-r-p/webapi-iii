@@ -1,6 +1,7 @@
 const express = require("express");
 
 const userDb = require("./userDb");
+const postDb = require("../posts/postDb")
 
 const router = express.Router();
 
@@ -19,7 +20,28 @@ router.post("/", (req, res) => {
     });
 });
 
-router.post("/:id/posts", (req, res) => {});
+router.post("/:id/posts", (req, res) => {
+  const postInfo = req.body;
+  const user_id = req.params.id;
+  console.log("post info from body", postInfo, user_id);
+
+  postDb.insert(postInfo)
+    .then(comment => {
+      if (postInfo.text) {
+        res.status(201).json(comment);
+      } else {
+        res
+          .status(400)
+          .json({ errorMessage: "Please provide text for the comment." });
+      }
+    })
+    .catch(err => {
+      console.log("comment post", err);
+      res.status(500).json({
+        error: "There was an error while saving the comment to the database"
+      });
+    });
+});
 
 router.get("/", (req, res) => {
   userDb
@@ -71,7 +93,8 @@ router.get("/:id/posts", (req, res) => {
 router.delete("/:id", (req, res) => {
   const userId = req.params.id;
 
-  userDb.remove(userId)
+  userDb
+    .remove(userId)
     .then(user => {
       if (user) {
         res.status(200).json({ message: "Successfully deleted the user." });
