@@ -4,7 +4,20 @@ const userDb = require("./userDb");
 
 const router = express.Router();
 
-router.post("/", (req, res) => {});
+router.post("/", (req, res) => {
+  const newUser = req.body;
+  console.log("newUser from body", newUser);
+
+  userDb
+    .insert(newUser)
+    .then(user => {
+      res.status(201).json(user);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "Error creating user" });
+    });
+});
 
 router.post("/:id/posts", (req, res) => {});
 
@@ -58,7 +71,7 @@ router.get("/:id/posts", (req, res) => {
 router.delete("/:id", (req, res) => {
   const userId = req.params.id;
 
-  Posts.remove(userId)
+  userDb.remove(userId)
     .then(user => {
       if (user) {
         res.status(200).json({ message: "Successfully deleted the user." });
