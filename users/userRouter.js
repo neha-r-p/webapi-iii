@@ -1,11 +1,11 @@
 const express = require("express");
 
 const userDb = require("./userDb");
-const postDb = require("../posts/postDb")
+const postDb = require("../posts/postDb");
 
 const router = express.Router();
 
-router.post("/", (req, res) => {
+router.post("/", validateUser, (req, res) => {
   const newUser = req.body;
   console.log("newUser from body", newUser);
 
@@ -25,7 +25,8 @@ router.post("/:id/posts", (req, res) => {
   const user_id = req.params.id;
   console.log("post info from body", postInfo, user_id);
 
-  postDb.insert(postInfo)
+  postDb
+    .insert(postInfo)
     .then(post => {
       if (postInfo.text) {
         res.status(201).json(post);
@@ -111,20 +112,21 @@ router.delete("/:id", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const changes = req.body;
-  
-    userDb.update(id, changes)
-      .then(updated => {
-        if (updated) {
-          res.status(200).json(updated)
-        } else {
-          res.status(404).json({ message: "User not found" });
-        }
-      })
-      .catch(err => {
-        res.status(500).json({ message: "User could not be updated" });
-      });
+  const { id } = req.params;
+  const changes = req.body;
+
+  userDb
+    .update(id, changes)
+    .then(updated => {
+      if (updated) {
+        res.status(200).json(updated);
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "User could not be updated" });
+    });
 });
 
 //custom middleware
@@ -151,12 +153,17 @@ if the request body is missing the required name field, cancel the request and r
 validatePost()*/
 
 function validateUser(req, res, next) {
-  if (i) {
+  const newUser = req.body;
+  console.log("newUser from body", req.body);
+
+  if (newUser.name) {
+    console.log("you may go");
+    next();
+  } else if (newUser.name === "") {
+    res.status(400).json({ message: "missing required name field" });
   } else {
     res.status(400).json({ message: "missing user data" });
   }
-
-  next();
 }
 
 /* validatePost validates the body on a request to create a new post
