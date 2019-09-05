@@ -20,7 +20,7 @@ router.post("/", validateUser, (req, res) => {
     });
 });
 
-router.post("/:id/posts", (req, res) => {
+router.post("/:id/posts", validateUserId, validatePost, (req, res) => {
   const postInfo = req.body;
   const user_id = req.params.id;
   console.log("post info from body", postInfo, user_id);
@@ -28,13 +28,7 @@ router.post("/:id/posts", (req, res) => {
   postDb
     .insert(postInfo)
     .then(post => {
-      if (postInfo.text) {
         res.status(201).json(post);
-      } else {
-        res
-          .status(400)
-          .json({ errorMessage: "Please provide text for the post." });
-      }
     })
     .catch(err => {
       console.log("post", err);
@@ -56,7 +50,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", validateUserId, (req, res) => {
   const userId = req.params.id;
 
   userDb
@@ -78,7 +72,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.get("/:id/posts", (req, res) => {
+router.get("/:id/posts", validateUserId, (req, res) => {
   const userId = req.params.id;
 
   userDb
@@ -91,7 +85,7 @@ router.get("/:id/posts", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateUserId, (req, res) => {
   const userId = req.params.id;
 
   userDb
@@ -111,7 +105,7 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validateUserId, (req, res) => {
   const { id } = req.params;
   const changes = req.body;
 
@@ -139,12 +133,19 @@ if the id parameter does not match any user id in the database, cancel the reque
 validateUser()*/
 
 function validateUserId(req, res, next) {
-  if (req.params.id) {
-  } else {
-    res.status(400).json({ message: "invalid user id" });
-  }
+    const {id} = req.params
 
-  next();
+    usersDb.getById(id)
+    .then(userid => {
+        if(userid){
+            req.user = req.body
+        }else{
+            res.status(400).json({ message: "invalid user id" })
+        }
+    })
+
+    next()
+
 }
 
 /* validateUser validates the body on a request to create a new user
@@ -171,7 +172,14 @@ if the request body is missing, cancel the request and respond with status 400 a
 if the request body is missing the required text field, cancel the request and respond with status 400 and { message: "missing required text field" } */
 
 function validatePost(req, res, next) {
-  if (i) {
+    const newPost = req.body
+    console.log("newPost from body", newPost)
+
+  if (newPost) {
+      console.log("love note written");
+      next();
+  } else if (newPost.text === ""){
+      res.status(400).json({ message: "missing required text field"})
   } else {
     res.status(400).json({ message: "missing post data" });
   }
