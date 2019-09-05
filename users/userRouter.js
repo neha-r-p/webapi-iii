@@ -135,7 +135,7 @@ validateUser()*/
 function validateUserId(req, res, next) {
     const {id} = req.params
 
-    usersDb.getById(id)
+    userDb.getById(id)
     .then(userid => {
         if(userid){
             req.user = req.body
@@ -175,16 +175,14 @@ function validatePost(req, res, next) {
     const newPost = req.body
     console.log("newPost from body", newPost)
 
-  if (newPost) {
-      console.log("love note written");
+  if (newPost.text) {
+      console.log("post has text");
       next();
   } else if (newPost.text === ""){
       res.status(400).json({ message: "missing required text field"})
   } else {
     res.status(400).json({ message: "missing post data" });
   }
-
-  next();
 }
 
 module.exports = router;
