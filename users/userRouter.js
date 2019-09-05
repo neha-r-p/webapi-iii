@@ -26,19 +26,19 @@ router.post("/:id/posts", (req, res) => {
   console.log("post info from body", postInfo, user_id);
 
   postDb.insert(postInfo)
-    .then(comment => {
+    .then(post => {
       if (postInfo.text) {
-        res.status(201).json(comment);
+        res.status(201).json(post);
       } else {
         res
           .status(400)
-          .json({ errorMessage: "Please provide text for the comment." });
+          .json({ errorMessage: "Please provide text for the post." });
       }
     })
     .catch(err => {
-      console.log("comment post", err);
+      console.log("post", err);
       res.status(500).json({
-        error: "There was an error while saving the comment to the database"
+        error: "There was an error while saving the post to the database"
       });
     });
 });
@@ -110,7 +110,22 @@ router.delete("/:id", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+  
+    userDb.update(id, changes)
+      .then(updated => {
+        if (updated) {
+          res.status(200).json(updated)
+        } else {
+          res.status(404).json({ message: "User not found" });
+        }
+      })
+      .catch(err => {
+        res.status(500).json({ message: "User could not be updated" });
+      });
+});
 
 //custom middleware
 
