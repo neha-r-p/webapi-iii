@@ -1,5 +1,7 @@
 const express = require("express");
 
+console.log('environment:', process.env.NODE_ENV)
+
 const server = express();
 
 server.use(express.json());
