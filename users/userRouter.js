@@ -43,19 +43,36 @@ router.get("/:id", (req, res) => {
 });
 
 router.get("/:id/posts", (req, res) => {
-    const userId = req.params.id;
+  const userId = req.params.id;
 
-    userDb.getUserPosts(userId)
-      .then(posts => {
-        res.status(200).json(posts);
-      })
-      .catch(err => {
-        res.status(500).json({ message: "Posts for user not found" });
-      });
+  userDb
+    .getUserPosts(userId)
+    .then(posts => {
+      res.status(200).json(posts);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Posts for user not found" });
+    });
 });
 
+router.delete("/:id", (req, res) => {
+  const userId = req.params.id;
 
-router.delete("/:id", (req, res) => {});
+  Posts.remove(userId)
+    .then(user => {
+      if (user) {
+        res.status(200).json({ message: "Successfully deleted the user." });
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ message: "The user could not be removed." });
+    });
+});
 
 router.put("/:id", (req, res) => {});
 
