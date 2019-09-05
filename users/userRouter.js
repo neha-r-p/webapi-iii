@@ -56,13 +56,7 @@ router.get("/:id", validateUserId, (req, res) => {
   userDb
     .getById(userId)
     .then(user => {
-      if (user) {
         res.status(200).json(user);
-      } else {
-        res
-          .status(404)
-          .json({ message: "The user with the specified ID does not exist." });
-      }
     })
     .catch(err => {
       console.log(err);
@@ -126,10 +120,10 @@ router.put("/:id", validateUserId, (req, res) => {
 //custom middleware
 
 function validateUserId(req, res, next) {
-  const { id } = req.params;
+  const userId = req.params.id;
 
-  userDb.getById(id).then(userid => {
-    if (userid) {
+  userDb.getById(userId).then(id => {
+    if (id) {
       req.user = req.body;
     } else {
       res.status(400).json({ message: "invalid user id" });
